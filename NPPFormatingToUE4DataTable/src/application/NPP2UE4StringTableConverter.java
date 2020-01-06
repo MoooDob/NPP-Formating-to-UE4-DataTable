@@ -90,6 +90,7 @@ public class NPP2UE4StringTableConverter extends Application {
 				try {
 					writer = new FileWriter(file.getAbsoluteFile() + ".csv");
 					writer.write("---,SourceString\n");
+					// writer.write("Key,SourceString\n"); // for String Table export
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -107,6 +108,7 @@ public class NPP2UE4StringTableConverter extends Application {
 	        			
 	        			// write key to file
 	        			output += color2Type[sourceColorization].replace(" ", "");			
+	        			//output += "\"" + color2Type[sourceColorization].replace(" ", "") + "\""; // for UE4 String Table
 	        			//output += '"' + currentClass + '"'			
 	        			output += ',';
 	
@@ -148,12 +150,10 @@ public class NPP2UE4StringTableConverter extends Application {
 	//	        				}
 	//	        				System.out.println();
 		        				
-		        				// UE4 String Table Format
+//		        				// UE4 String Table Format
 //		        				// replacements to fit UE4 format
 //		        				theText = theText.replace("\\", "\\\\"); // \ -> \\
-//		        				//Pattern.compile("\\n", Pattern.DOTALL).matcher(theText).replaceAll("####");  // \n ->\r\n
 //		        				theText = theText.replaceAll("\\r\\n|\\r|\\n", "\\\\r\\\\n"); //"\\r\\n"); // \n ->\r\n
-//		//        				theText = theText.replaceAll("#####", "\\"); //  					
 //		        				theText = theText.replace("\"", "\\\"\""); // " -> \""			
 //		        				theText = theText.replace("'", "\\'"); // ' -> \'	
 		        				

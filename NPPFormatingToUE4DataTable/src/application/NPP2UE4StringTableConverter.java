@@ -178,7 +178,7 @@ public class NPP2UE4StringTableConverter extends Application {
 		        			// insert space at position 0 in empty lines ( for UE4 Text Render Actor )
 		        			sourceString = sourceString.replaceAll("\n\r", "\n \r"); // keep attention: \n\r instead of \r\n to grab all case in one run
 		        			
-		        			// insert space at position 0 in line 1 if the sourceString starts with a newline
+		        			// insert space at position 0 in the first line if the sourceString starts with a newline
 		        			if (sourceString.length() > 0 && sourceString.charAt(0) == '\r')
 		        				sourceString = " " + sourceString;
 		        			

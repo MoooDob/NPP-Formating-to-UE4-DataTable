@@ -1,18 +1,18 @@
-# NPP formatter to UE4 Data Table converter
+# Notepad++ formatted source code to UE4 Data Table converter
 
 This small piece of code converts a source code formatted by [Notepad++](https://notepad-plus-plus.org) (NPP) into a [UE4](https://unreal-engine.com) [Data Table](https://docs.unrealengine.com/en-US/Gameplay/DataDriven/index.html). Each each source code color will be exported into a separate data set, each sign of other colors will be replaced by a space. 
 
 ## Background
 
-Personally, I used the tool to convert Java source code to UE4 Data Tables, but with some effort it will also be possible to convert source code of other languages to Data Tables or to UE4 [String Tables](https://docs.unrealengine.com/en-US/Gameplay/Localization/StringTables/index.html) as long as you find a fitting NPP color scheme , see following sections.
+Personally, I used the tool to convert Java source code to UE4 `Data Tables`, but with some effort it will also be possible to convert source code of other languages to `Data Tables` or to UE4 [`String Tables`](https://docs.unrealengine.com/en-US/Gameplay/Localization/StringTables/index.html) as long as you find a fitting NPP color scheme , see following sections.
 
-|  Original in NPP: <br />FileInfo.java  | exported HTML: FileInfo.java.html | converted to UE4 Data Table:<br />FileInfo.java.html.csv |
-| :------------------------------------: | :-------------------------------: | :------------------------------------------------------: |
-| ![Java in NPP](images/Java-in-NPP.png) |  ![as HTML](images/as-HTML.png)   |    ![as UE4 Data Table](images/as-UE4-Data-Table.png)    |
+| Original in NPP: <br />*FileInfo.java* | exported HTML: *FileInfo.java.html* | converted to UE4 Data Table:<br />*FileInfo.java.html.csv* |
+| :------------------------------------: | :---------------------------------: | :--------------------------------------------------------: |
+| ![Java in NPP](images/Java-in-NPP.png) |   ![as HTML](images/as-HTML.png)    |     ![as UE4 Data Table](images/as-UE4-Data-Table.png)     |
 
 ## In UE4
 
-<img alt="UE4 source code layer" align="right"  src="images/UE4 Source Code.gif" width="40%">In UE4, I used CSV file with the splitted source code to display the source code with Text Render Actors in different layers. 
+<img alt="UE4 source code layer" align="right"  src="images/UE4 Source Code.gif" width="40%">In UE4, I used the CSV files containing the splitted source code to create a layered source code visualization with `Text Render Actors` in layers. 
 
 ### Font
 
@@ -38,51 +38,65 @@ My resulting level looked like shown below. For this simple demo I just copied t
 
 ## UE4 String Table
 
-The basic structure used by this conversion function is the same as used by the UE4 String Table Asset. String Table Assets wont be neither imported nor updated automatically, so it could be a little bit annoying depending what you want to use the CSV files for and how many CSV files you have to handle. You have to create a String Table Asset in the editor and import the data by hand using the provided _import from csv_ button. 
+The basic structure used by this conversion function is the same as used by the [UE4 String Table Asset](https://docs.unrealengine.com/en-US/Gameplay/Localization/StringTables/index.html). `String Table` assets won't neither be imported nor updated automatically, so it could be a little bit annoying depending what you want to use the CSV files for and how many CSV files you have to import. You have to create a `String Table` asset in the editor and import the data by hand using the provided _import from csv_ button. 
 
-Interestingly the import functions for String Tables and Data Tables seems to work a little bit different: 
+Interestingly the import functions for `String Tables` and `Data Tables` seems to work a little bit different: 
 
-* For String Tables, the first column has to be named Key. For Data Tables, the name of the first column is not in defined--the first column will be used as key column. You can simply switch the comments of the following lines:
+* For `String Tables`, the first column has to be named Key. For `Data Tables`, the name of the first column is not in defined--the first column will be used as key column. You can simply switch the comments of the following lines:
 
   ```Java
   writer.write("---,SourceString\n");
   // writer.write("Key,SourceString\n"); // for String Table export
   ```
 
-* There are differences in interpreting special characters and quotation marks. In the _NPPFormatingToUE4DataTable_ program you can activate the conversion to String Table format by switching the comments of the following lines:			       				
+* There are differences in interpreting special characters and quotation marks. In the _NPPFormatingToUE4DataTable_ program you can activate the conversion to `String Table` format by switching the comments of the following lines:			       				
 
   ```java
   //	// UE4 String Table Format
   //	// replacements to fit UE4 format
-  //	theText = theText.replace("\", "\\"); // \ -> \
-  //	theText = theText.replaceAll("\r\n|\r|\n", "\\r\\n"); //"\r\n"); // \n ->\r\n
-  //	theText = theText.replace(""", "\"""); // " -> ""			
-  //	theText = theText.replace("'", "\'"); // ' -> '
-  
+  //	theText = theText.replace("\\", "\\\\"); // \ -> \\
+  //	theText = theText.replaceAll("\\r\\n|\\r|\\n", "\\\\r\\\\n"); //"\\r\\n"); // \n ->\r\n
+  //	theText = theText.replace("\"", "\\\"\""); // " -> \""			
+  //	theText = theText.replace("'", "\\'"); // ' -> \'	
+  		        				
   // UE4 Data Table Format
   // replacements to fit UE4 format
-  theText = theText.replaceAll("\\r\\n|\\r|\\n", "\r\n"); // \n ->\r\n  					
-  theText = theText.replace("\"", "\"\""); // " -> ""								
+  theText = theText.replaceAll("\\r\\n|\\r|\\n", "\r\n"); // \n ->\r\n 
+  theText = theText.replace("\"", "\"\""); //   replace quotation marks:  " -> ""								
+  						
   ```
 
-* The Key value has to be quoted for String Tables, so just switch the comment signs of the following lines:
+* The values of the key column have to be quoted for `String Tables`, so just switch the comment signs of the following lines:
 
   ```java
   output += color2Type[sourceColorization].replace(" ", "");			
   //output += "\"" + color2Type[sourceColorization].replace(" ", "") + "\""; // for UE4 String Table
   ```
 
-* It seems to be important to always have at least one character in each line, otherwise under some conditions the text will be displayed larger than necessary (tested with UE4.22 and __ScaleX_ and _ScaleY_ scaled Text Render Actors). Currently, the contents of the output is not optimized: Each unnecessary sign is simply replaced by a space. Because the Text Render draw every sign as a static mesh, spaces are also drawn. So the current version it is a little bit consuming.
+* It seems to be important to always have at least one character in each line, otherwise under some conditions the text will be displayed larger than necessary (tested with UE4.22 and _ScaleX_ and _ScaleY_ scaled `Text Render Actors`). For that the output will be optimized so that both empty lines at the end and sequences of spaces and tabs at the end of each line will be removed:
 
-##Colors
+  ```Java
+  // replace space and tab before \r\n
+  sourceString = sourceString.replaceAll("[ \t]+(\r\n)", "$1");
+  	        			
+  // remove sequences of \r\n before end of text
+  sourceString = sourceString.replaceAll("[\r\n]+$", "");
+  	        				        		   		
+  // insert space at position 0 in empty lines ( for UE4 Text Render Actor )
+  sourceString = sourceString.replaceAll("\n\r", "\n \r"); // keep attention: \n\r instead of \r\n to grab all case in one run
+  	        			
+  // insert space at position 0 in the first line if the sourceString starts with a newline
+  if (sourceString.length() > 0 && sourceString.charAt(0) == '\r')
+  		sourceString = " " + sourceString;
+  ```
 
 ### Missing colors
 
-Depending on your source code some colors are missing in the output (for instance, the sample class don't use comments, so the data sets for comments will be finally empty. ) 
+Depending on your source code some colors may be missing in the output (for instance, the sample class don't use comments, so the data sets for comments will be finally empty. ) 
 
 ### Names of colorization
 
-I not sure, if I found all color classes and named them right. Especially if you work with source codes of different programming languages than Java the naming of the colors might be wrong. You can easy fix it by rework the list of color classes: 
+I not sure, if I found all color classes and named them right. Especially if you work with source codes of different programming languages than Java the naming of the colors might be wrong. You can easy fix it by rework the list of color classes. I spend not much time in this list. 
 
 ```Java
 final static String color2Type[] = new String[] {
@@ -101,6 +115,6 @@ final static String color2Type[] = new String[] {
 
 ## Alternatives
 
-* Alternative to displaying one Text Render per color, it might be possible to create a Material flexible enough to display different colors depending on the location in 3D space. 
-* Using UMG is another alternative. The new [UMG Rich Text Block](https://docs.unrealengine.com/en-US/Engine/UMG/UserGuide/UMGRichTextBlock/index.html) makes it possible to display styled text in a text area. I tested this solution, for me it was to slow (I had to display hundreds of source codes).
-* Changing the Text Render Actor may be another possibility...
+* Alternative to displaying one `Text Render Actor` per color, it might be possible to create a material flexible enough to display different colors depending on the location of each letter in 3D space. That way, it might be sufficient to use only one `Text Render Actor`.
+* Using `UMG` is another alternative. The new [UMG Rich Text Block](https://docs.unrealengine.com/en-US/Engine/UMG/UserGuide/UMGRichTextBlock/index.html) makes it possible to display styled text in a text area. I tested this attractive way, for me it was to slow (I had to display hundreds of source codes).
+* Changing the `Text Render Actor` itself may be another possibility...

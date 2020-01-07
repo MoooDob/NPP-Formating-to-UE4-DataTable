@@ -135,12 +135,14 @@ public class NPP2UE4StringTableConverter extends Application {
 	        			
 						if (content != null) {
 														
-		        			for(int index = 0; index < content.size(); index++){		        		
+		        			String sourceString = "";
+		        			
+							for(int contentIndex = 0; contentIndex < content.size(); contentIndex++){		        		
 
-		        				String theText = ((Element) content.get(index)).wholeText();
+		        				String theText = ((Element) content.get(contentIndex)).wholeText();
 		        				        				       				
-		        				String classname = content.get(index).attr("class");
-			        			System.out.println("    white out " + index + " of " + content.size() + " elements sc" + sourceColorization + " " + file.getName());
+		        				String classname = content.get(contentIndex).attr("class");
+			        			System.out.println("    white out " + contentIndex + " of " + content.size() + " elements sc" + sourceColorization + " " + file.getName());
 			        			
 		        				if (! classname.equals(currentClass) )
 		        					theText = theText.replaceAll("[^\n]", " ");	
@@ -159,13 +161,25 @@ public class NPP2UE4StringTableConverter extends Application {
 		        				
 		        				// UE4 Data Table Format
 		        				// replacements to fit UE4 format
-		        				theText = theText.replaceAll("\\r\\n|\\r|\\n", "\r\n"); // \n ->\r\n  					
-		        				theText = theText.replace("\"", "\"\""); // " -> ""								
+		        				theText = theText.replaceAll("\\r\\n|\\r|\\n", "\r\n"); // \n ->\r\n  							        			
+		        				theText = theText.replace("\"", "\"\""); //   replace quotation marks:  " -> ""								
 		
-		        				output += theText;
+		        				sourceString += theText;
 		        					
 		        			}
 		        			
+							// replace space and tab before \r\n
+		        			sourceString = sourceString.replaceAll("[ \t]+(\r\n)", "$1");
+		        			
+		        			// insert space at position 0 in empty lines ( for UE4 Text Render Actor )
+		        			sourceString = sourceString.replaceAll("\n\r", "\n \r"); // keep attention: \n\r instead of \r\n to grab all case in one run
+		        			
+		        			// insert space at position 0 in line 1 if the sourceString starts with a newline
+		        			if (sourceString.charAt(0) == '\r')
+		        				sourceString = " " + sourceString;
+		        			
+	        				output += sourceString;
+
 		        			output += "\"\n";
 		        			textflow.getChildren().add(new Text(output));	                    
 							try {

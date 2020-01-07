@@ -58,6 +58,7 @@ public class NPP2UE4StringTableConverter extends Application {
 	
 	// ########################
 	
+
 	
 
 	@Override
@@ -171,11 +172,14 @@ public class NPP2UE4StringTableConverter extends Application {
 							// replace space and tab before \r\n
 		        			sourceString = sourceString.replaceAll("[ \t]+(\r\n)", "$1");
 		        			
+		        			// remove sequences of \r\n before end of text
+		        			sourceString = sourceString.replaceAll("[\r\n]+$", "");
+		        				        		   		
 		        			// insert space at position 0 in empty lines ( for UE4 Text Render Actor )
 		        			sourceString = sourceString.replaceAll("\n\r", "\n \r"); // keep attention: \n\r instead of \r\n to grab all case in one run
 		        			
 		        			// insert space at position 0 in line 1 if the sourceString starts with a newline
-		        			if (sourceString.charAt(0) == '\r')
+		        			if (sourceString.length() > 0 && sourceString.charAt(0) == '\r')
 		        				sourceString = " " + sourceString;
 		        			
 	        				output += sourceString;

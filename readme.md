@@ -1,4 +1,4 @@
-# NPP formatter to UE4 data table converter
+# NPP formatter to UE4 Data Table converter
 
 This small piece of code converts a source code formatted by [Notepad++](https://notepad-plus-plus.org) (NPP) into a [UE4](https://unreal-engine.com) [Data Table](https://docs.unrealengine.com/en-US/Gameplay/DataDriven/index.html). Each each source code color will be exported into a separate data set, each sign of other colors will be replaced by a space. 
 
